@@ -1,16 +1,12 @@
 <template>
   <div>
-!22
-
       <div v-for="(input,id) in inputs" :key="id" >
-        <BaseSocket/>
+        <BaseSocket style="margin-left:-24px;"/>
       </div>
       <div v-for="(output,id) in outputs" :key="id"> 
-        <BaseSocket/>
+        <BaseSocket  style="margin-right:-24px;"/>
       </div>
       
-22
-
   </div>
 </template>
 
