@@ -46,14 +46,22 @@
 </template>
 
 <script lang="ts">
+  import cloneDeep from 'lodash.clonedeep'
+  import { DataType, validators, Validators } from './plugins/ajv'
+  const VALIDATOR_KEY = 'main'
 
+  const validateMain: Validators[typeof VALIDATOR_KEY] = validators[VALIDATOR_KEY]
+  let bbb = validateMain
+  const vvv = validateMain
   export default {
-    data() { 
+    data() {
+      const props = cloneDeep(this.$props)
+      console.log(this.$validators)
       console.log(this.$props)
       return {
       lineStart: null,
       lineEnd: null,
-      blocks: this.$props.initBlocks,
+      blocks: props.initBlocks,
       links: [
         'Dashboard',
         'Messages',

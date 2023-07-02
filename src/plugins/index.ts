@@ -10,11 +10,10 @@ import PanZoomComponent from './PanZoom.vue'
 import AjvComponent from './PanZoom.vue'
 import vuetify from './vuetify'
 import router from '../router'
-import Ajv from 'ajv';
+import validators from './ajv'
+// import Ajv from 'ajv';
 
-const ajv = new Ajv();
-
-// Types
+// Types {JSONSchemaType} 
 import type { App } from 'vue'
 
 
@@ -22,7 +21,7 @@ export function registerPlugins (app: App) {
   loadFonts()
   app.component("PanZoom", PanZoomComponent);
   app.component("Ajv", PanZoomComponent);
-  app.config.globalProperties.$ajv = ajv
+  app.config.globalProperties.$validators = validators
 
   app
     .use(vuetify)

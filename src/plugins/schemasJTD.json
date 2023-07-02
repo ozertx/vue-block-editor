@@ -1,0 +1,26 @@
+{
+  "main": {
+    "properties": {
+      "foo": {
+        "type": "int32"
+      }
+    },
+    "optionalProperties": {
+      "bar": {
+        "type": "string"
+      }
+    }
+  },
+  "common": {
+    "properties": {
+      "foo": {
+        "type": "int32"
+      }
+    },
+    "optionalProperties": {
+      "bar": {
+        "type": "string"
+      }
+    }
+  }
+}
