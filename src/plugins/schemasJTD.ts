@@ -4,54 +4,55 @@ export const schemasJTD = {
     "properties": {
       "id": { "type": "string" },
       "username": { "type": "string" },
-      "email": { "type": "string", "format": "email" },
+      // "email": { "type": "string", "format": "email" },
       "password": { "type": "string" },
-      "createdAt": { "type": "string", "format": "date-time" },
-      "updatedAt": { "type": "string", "format": "date-time" }
+      "createdAt": { "type": "string" },
+      "updatedAt": { "type": "string" }
     },
-    "required": ["id", "username", "email", "password", "createdAt", "updatedAt"],
     "additionalProperties": false
   },
   "AppModel": {
+    "additionalProperties": false,
     "properties": {
-      "user": { "type": "string", },
-      "schemas": { "type": "string", "additionalProperties": true },
-      "data": { "type": "string", "additionalProperties": true }
+      "components": { "type": "string" },
+      "schemas":  { "type": "string" },
+      "config":  { "type": "string" },
     },
-    "required": ["user", "schemas", "data"],
-    "additionalProperties": false
-  },
-  "BlockSchema": {
-    "properties": {
-      "dependencies": {
-        "type": "string",
+    // "required": ["user", "schemas", "data"],
+    "definitions": {
+      "baselist": {
         "properties": {
-          "input": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "output": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "top": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "bottom": {
-            "type": "array",
-            "items": { "type": "string" }
+          "sss": {
+            "type": "string"
           }
         },
-        "required": ["input", "output", "top", "bottom"],
+      }
+    }
+  },
+  "BlockSchema": {
+    "additionalProperties": false,
+    "properties": {
+      "socets": {
+        "properties": {
+          "input": {
+            "elements": { "type": "string" }
+          },
+          "output": {
+            "elements": { "type": "string" }
+          },
+          "top": {
+            "elements": { "type": "string" }
+          },
+          "bottom": {
+            "elements": { "type": "string" }
+          }
+        },
         "additionalProperties": false
       },
       "BlockName": { "type": "string" },
       "BlockType": { "type": "string" },
       "BlockInfo": { "type": "string" },
-      "BlockConfig": { "type": "string", "additionalProperties": true }
+      "BlockConfig": { "type": "string" }
     },
-    "required": ["dependencies", "BlockName", "BlockType", "BlockInfo", "BlockConfig"],
-    "additionalProperties": false
   },
 } as const

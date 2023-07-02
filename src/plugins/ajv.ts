@@ -4,6 +4,7 @@ import Ajv2019, { JSONSchemaType } from "ajv/dist/2019"
 import AjvJTD, { JTDSchemaType, JTDDataType, ValidateFunction } from "ajv/dist/jtd"
 // const ajv = new Ajv({ removeAdditional: true, useDefaults: true });
 // const ajv = new Ajv2019({ removeAdditional: true, useDefaults: true });
+import cloneDeep from 'lodash.clonedeep'
 
 export const schemas = { ...schemasJTD } as const
 
@@ -20,15 +21,14 @@ export type ValidatorFn<T> = ValidateFunction<T>
 export type DataType = {
   [Key in SchemasKeys]: JTDDataTypeTransform<Schemas[Key]>
 };
-export interface ValidFunction<Key extends SchemasKeys> {
-  (data: any, params: {
-    throwIfInvalid?: boolean
-  }): data is DataType[Key]
+
+export interface IAppValidatorParam {
+  throwIfInvalid?: boolean,
+  clone?: boolean
 }
+
 export type AppValidator<Key extends SchemasKeys> = {
-  (data: any, params: {
-    throwIfInvalid?: boolean
-  }): DataType[Key] | null;
+  (data: any, params: IAppValidatorParam ): DataType[Key] | null;
   ajvValidator: ValidatorFn<DataType[Key]>
 }
 
@@ -45,19 +45,25 @@ function getSchemaValidator<SchemaName extends SchemasKeys>(schemaName: SchemaNa
   const validator: ValidatorFn<DataType[SchemaName]> = ajvJTD.compile<DataType[SchemaName]>(schema)
   
 
-  const appValidator: AppValidator<SchemaName> = Object.assign(function (data: any, params: any): DataType[SchemaName] | null {
-    const { throwIfInvalid } = params 
-    if (validator(data)) {
+  const appValidator: AppValidator<SchemaName> = Object.assign(
+    function (data: any, params: IAppValidatorParam): DataType[SchemaName] | null {
+      const { throwIfInvalid, clone } = params 
+      if (validator(data)) {
+        if (clone) {
+          return cloneDeep(data)
+        }
+        else return data as DataType[SchemaName]
+      }
+      else if (throwIfInvalid) {
+        console.log("validate item", cloneDeep(data))
+        console.log("validate error", validator.errors)
+        throw new Error('validation error' )
+      }
+      else return null
 
-      return data as DataType[SchemaName]
-    }
-    else if (throwIfInvalid) {
-      console.log("validate error", validator.errors)
-      throw new Error('validation error' )
-    }
-    else return null
-
-  }, { ajvValidator: validator })
+    },
+    { ajvValidator: validator }
+  )
 
   return appValidator
 }

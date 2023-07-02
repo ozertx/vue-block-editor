@@ -46,7 +46,6 @@
 </template>
 
 <script lang="ts">
-  import cloneDeep from 'lodash.clonedeep'
   import { DataType, validators, Validators } from './plugins/ajv'
   const VALIDATOR_KEY = 'AppModel'
 
@@ -54,7 +53,7 @@
 
   export default {
     data() {
-      const props = validateAppModel(cloneDeep(this.$props), { throwIfInvalid: true }) 
+      const props = validateAppModel(this.$props, { throwIfInvalid: true, clone: true }) 
       
       // props
       return {
