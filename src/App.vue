@@ -34,6 +34,9 @@
           >
           {{ item }} - 
           {{ index }}
+            !
+          <BaseBlock/>
+!
           </v-card>
 
         </v-container>
@@ -46,14 +49,15 @@
 </template>
 
 <script lang="ts">
-  import { DataType, validators, Validators } from './plugins/ajv'
+  import validators from './plugins/ajv'
   const VALIDATOR_KEY = 'AppModel'
 
   const validateAppModel = validators[VALIDATOR_KEY]
 
   export default {
     data() {
-      const props = validateAppModel(this.$props, { throwIfInvalid: true, clone: true }) 
+      // const props = validateAppModel(this.$props, { throwIfInvalid: true, clone: true }) 
+      const props = this.$props
       
       // props
       return {

@@ -7,7 +7,8 @@
 // Plugins
 import { loadFonts } from './webfontloader'
 import PanZoomComponent from './PanZoom.vue'
-import AjvComponent from './PanZoom.vue'
+import BaseBlock from '../components/BaseBlock.vue'
+import BaseSocket from '../components/BaseSocket.vue'
 import vuetify from './vuetify'
 import router from '../router'
 import validators from './ajv'
@@ -20,7 +21,8 @@ import type { App } from 'vue'
 export function registerPlugins (app: App) {
   loadFonts()
   app.component("PanZoom", PanZoomComponent);
-  app.component("Ajv", PanZoomComponent);
+  app.component("BaseBlock", BaseBlock);
+  app.component("BaseSocket", BaseSocket);
   app.config.globalProperties.$validators = validators
 
   app

@@ -1,4 +1,4 @@
-import { schemasJTD } from './schemasJTD';
+import { schemasJTD, definitionsJTD } from './schemasJTD';
 
 import Ajv2019, { JSONSchemaType } from "ajv/dist/2019"
 import AjvJTD, { JTDSchemaType, JTDDataType, ValidateFunction } from "ajv/dist/jtd"
@@ -10,6 +10,7 @@ export const schemas = { ...schemasJTD } as const
 
 const ajvJTD = new AjvJTD({ removeAdditional: true });
 
+export interface IDefinitionsJDT { definitions: Record<keyof typeof definitionsJTD, unknown> }
 export type Schemas = typeof schemas
 export type SchemasKeys = keyof Schemas
 
@@ -38,12 +39,11 @@ export type Validators = {
 
 function getSchemaValidator<SchemaName extends SchemasKeys>(schemaName: SchemaName): AppValidator<SchemaName> {
 
-  // const schema: Schemas[SchemaName] = schemas[schemaName]
-  const schema: Schemas[SchemaName] = schemas[schemaName]
+  const schema: Schemas[SchemaName] = cloneDeep(schemas[schemaName])
 
+  const schemaWithDef: Schemas[SchemaName] & IDefinitionsJDT = Object.assign(schema, { definitions: definitionsJTD})
   
-  const validator: ValidatorFn<DataType[SchemaName]> = ajvJTD.compile<DataType[SchemaName]>(schema)
-  
+  const validator: ValidatorFn<DataType[SchemaName]> = ajvJTD.compile<DataType[SchemaName]>(schemaWithDef)
 
   const appValidator: AppValidator<SchemaName> = Object.assign(
     function (data: any, params: IAppValidatorParam): DataType[SchemaName] | null {

@@ -1,3 +1,9 @@
+export const definitionsJTD = {
+  "baselist": {
+    "properties": {
+    },
+  }
+} as const; 
 
 export const schemasJTD = {
   "User": {
@@ -19,15 +25,7 @@ export const schemasJTD = {
       "config":  { "type": "string" },
     },
     // "required": ["user", "schemas", "data"],
-    "definitions": {
-      "baselist": {
-        "properties": {
-          "sss": {
-            "type": "string"
-          }
-        },
-      }
-    }
+
   },
   "BlockSchema": {
     "additionalProperties": false,
