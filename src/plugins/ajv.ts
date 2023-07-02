@@ -4,10 +4,10 @@ import Ajv2019, { JSONSchemaType } from "ajv/dist/2019"
 import AjvJTD, { JTDSchemaType, JTDDataType, ValidateFunction } from "ajv/dist/jtd"
 // const ajv = new Ajv({ removeAdditional: true, useDefaults: true });
 // const ajv = new Ajv2019({ removeAdditional: true, useDefaults: true });
-const ajvJTD = new AjvJTD({ removeAdditional: true });
 
 export const schemas = { ...schemasJTD } as const
 
+const ajvJTD = new AjvJTD({ removeAdditional: true });
 
 export type Schemas = typeof schemas
 export type SchemasKeys = keyof Schemas
@@ -20,19 +20,46 @@ export type ValidatorFn<T> = ValidateFunction<T>
 export type DataType = {
   [Key in SchemasKeys]: JTDDataTypeTransform<Schemas[Key]>
 };
+export interface ValidFunction<Key extends SchemasKeys> {
+  (data: any, params: {
+    throwIfInvalid?: boolean
+  }): data is DataType[Key]
+}
+export type AppValidator<Key extends SchemasKeys> = {
+  (data: any, params: {
+    throwIfInvalid?: boolean
+  }): DataType[Key] | null;
+  ajvValidator: ValidatorFn<DataType[Key]>
+}
 
 export type Validators = {
-  [Key in SchemasKeys]: ValidatorFn<DataType[Key]>
+  [Key in SchemasKeys]: AppValidator<Key>
 };
 
-function getSchemaValidator<SchemaName extends SchemasKeys>(schemaName: SchemaName): ValidatorFn<DataType[SchemaName]> {
+function getSchemaValidator<SchemaName extends SchemasKeys>(schemaName: SchemaName): AppValidator<SchemaName> {
 
   // const schema: Schemas[SchemaName] = schemas[schemaName]
   const schema: Schemas[SchemaName] = schemas[schemaName]
 
-  const validator: ValidatorFn<DataType[typeof schemaName]> = ajvJTD.compile<DataType[typeof schemaName]>(schema)
+  
+  const validator: ValidatorFn<DataType[SchemaName]> = ajvJTD.compile<DataType[SchemaName]>(schema)
+  
 
-  return validator
+  const appValidator: AppValidator<SchemaName> = Object.assign(function (data: any, params: any): DataType[SchemaName] | null {
+    const { throwIfInvalid } = params 
+    if (validator(data)) {
+
+      return data as DataType[SchemaName]
+    }
+    else if (throwIfInvalid) {
+      console.log("validate error", validator.errors)
+      throw new Error('validation error' )
+    }
+    else return null
+
+  }, { ajvValidator: validator })
+
+  return appValidator
 }
 
 export const validators: Validators = Object.entries(schemasJTD as typeof schemasJTD).reduce((acc, [k, v]) => { acc[k] = getSchemaValidator(k as SchemasKeys); return acc }, {} as any)
