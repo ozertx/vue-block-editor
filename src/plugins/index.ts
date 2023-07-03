@@ -10,6 +10,7 @@ import PanZoomComponent from './PanZoom.vue'
 import BaseBlock from '../components/BaseBlock.vue'
 import BaseSocket from '../components/BaseSocket.vue'
 import SvgRender from '../components/SvgRender.vue'
+import StateStore from '../components/StateStore.vue'
 import vuetify from './vuetify'
 import router from '../router'
 import validators from './ajv'
@@ -25,6 +26,7 @@ export function registerPlugins (app: App) {
   app.component("BaseBlock", BaseBlock);
   app.component("BaseSocket", BaseSocket);
   app.component("SvgRender", SvgRender);
+  app.component("StateStore", StateStore);
   app.config.globalProperties.$validators = validators
 
   app
